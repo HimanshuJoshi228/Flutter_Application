@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class StartScreen extends StatefulWidget {
@@ -8,6 +10,19 @@ class StartScreen extends StatefulWidget {
 }
 
 class _StartScreenState extends State<StartScreen> {
+// stack redirect
+  final _auth = FirebaseAuth.instance;
+  @override
+  void initState() {
+    // TODO: implement initState
+    _auth.authStateChanges().listen((User? user) {
+      if (!(user == null)) {
+        Navigator.pushReplacementNamed(context, "/homescreen");
+      }
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

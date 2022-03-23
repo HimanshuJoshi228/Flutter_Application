@@ -1,7 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+// call firebase
+  User? user = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +44,9 @@ class HomeScreen extends StatelessWidget {
                         fontSize: 25.0,
                       ),
                     ),
-                    const Text(
-                      "user@gmail.com",
-                      style: TextStyle(
+                    Text(
+                      "${user?.email}",
+                      style: const TextStyle(
                         fontSize: 25.0,
                       ),
                     ),
@@ -45,7 +54,9 @@ class HomeScreen extends StatelessWidget {
                       height: 20.0,
                     ),
                     ElevatedButton(
-                      onPressed: null,
+                      onPressed: () {
+                        logOut(context);
+                      },
                       child: const Text(
                         "SignOut",
                         style: TextStyle(
@@ -55,6 +66,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
+                        primary: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                           side: const BorderSide(
@@ -197,5 +209,10 @@ class HomeScreen extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
+  }
+
+  Future<void> logOut(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushReplacementNamed(context, "/startscreen");
   }
 }

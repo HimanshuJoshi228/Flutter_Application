@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +12,25 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  // calling firebase
+  final _auth = FirebaseAuth.instance;
+  // form key
+  final _formKey = GlobalKey<FormState>();
+  // edit controller
+  final emailEditingController = new TextEditingController();
+  final passwordEditingController = new TextEditingController();
+  final confirmPasswordEditingController = new TextEditingController();
+
+  // dispose controller
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    emailEditingController.dispose();
+    passwordEditingController.dispose();
+    confirmPasswordEditingController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,112 +60,171 @@ class _SignUpScreenState extends State<SignUpScreen> {
               padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
               child: Column(
                 children: [
-                  TextFormField(
-                    style: const TextStyle(
-                      fontSize: 20.0,
-                    ),
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.fromLTRB(10, 15, 10, 15),
-                      prefixIcon: const Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                        child: Icon(
-                          Icons.email_outlined,
-                          size: 30,
-                          color: Colors.black,
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: emailEditingController,
+                          onSaved: (value) {
+                            emailEditingController.text = value!;
+                          },
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return ("Please Enter Your Email");
+                            }
+                            // reg expression for email validation
+                            if (!RegExp(
+                                    "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
+                                .hasMatch(value)) {
+                              return ("Please Enter a valid email");
+                            }
+                            return null;
+                          },
+                          keyboardType: TextInputType.emailAddress,
+                          textInputAction: TextInputAction.next,
+                          style: const TextStyle(
+                            fontSize: 20.0,
+                          ),
+                          decoration: InputDecoration(
+                            contentPadding:
+                                const EdgeInsets.fromLTRB(10, 15, 10, 15),
+                            prefixIcon: const Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 5, horizontal: 10),
+                              child: Icon(
+                                Icons.email_outlined,
+                                size: 30,
+                                color: Colors.black,
+                              ),
+                            ),
+                            hintText: "Enter Email",
+                            hintStyle: const TextStyle(
+                              fontSize: 22.0,
+                            ),
+                            labelText: "Email",
+                            labelStyle: TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.blue.shade800,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors.amberAccent.shade700,
+                                  width: 2.0),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
                         ),
-                      ),
-                      hintText: "Enter Email",
-                      hintStyle: const TextStyle(
-                        fontSize: 22.0,
-                      ),
-                      labelText: "Email",
-                      labelStyle: TextStyle(
-                        fontSize: 20.0,
-                        color: Colors.blue.shade800,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Colors.amberAccent.shade700, width: 2.0),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  TextFormField(
-                    style: const TextStyle(
-                      fontSize: 20.0,
-                    ),
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.fromLTRB(10, 15, 10, 15),
-                      prefixIcon: const Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                        child: Icon(
-                          Icons.no_encryption_gmailerrorred_sharp,
-                          size: 30,
-                          color: Colors.black,
+                        const SizedBox(
+                          height: 20,
                         ),
-                      ),
-                      hintText: "Enter Password",
-                      hintStyle: const TextStyle(
-                        fontSize: 22.0,
-                      ),
-                      labelText: "Password",
-                      labelStyle: TextStyle(
-                        fontSize: 20.0,
-                        color: Colors.blue.shade800,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Colors.amberAccent.shade700, width: 2.0),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  TextFormField(
-                    style: const TextStyle(
-                      fontSize: 20.0,
-                    ),
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.fromLTRB(10, 15, 10, 15),
-                      prefixIcon: const Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                        child: Icon(
-                          Icons.no_encryption_gmailerrorred_sharp,
-                          size: 30,
-                          color: Colors.black,
+                        TextFormField(
+                          controller: passwordEditingController,
+                          onSaved: (value) {
+                            passwordEditingController.text = value!;
+                          },
+                          validator: (value) {
+                            RegExp regex = new RegExp(r'^.{6,}$');
+                            if (value!.isEmpty) {
+                              return ("Password is required for login");
+                            }
+                            if (!regex.hasMatch(value)) {
+                              return ("Enter Valid Password(Min. 6 Character)");
+                            }
+                          },
+                          obscureText: true,
+                          textInputAction: TextInputAction.next,
+                          style: const TextStyle(
+                            fontSize: 20.0,
+                          ),
+                          decoration: InputDecoration(
+                            contentPadding:
+                                const EdgeInsets.fromLTRB(10, 15, 10, 15),
+                            prefixIcon: const Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 5, horizontal: 10),
+                              child: Icon(
+                                Icons.no_encryption_gmailerrorred_sharp,
+                                size: 30,
+                                color: Colors.black,
+                              ),
+                            ),
+                            hintText: "Enter Password",
+                            hintStyle: const TextStyle(
+                              fontSize: 22.0,
+                            ),
+                            labelText: "Password",
+                            labelStyle: TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.blue.shade800,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors.amberAccent.shade700,
+                                  width: 2.0),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
                         ),
-                      ),
-                      hintText: "Enter Confirm Password",
-                      hintStyle: const TextStyle(
-                        fontSize: 22.0,
-                      ),
-                      labelText: "Confirm Password",
-                      labelStyle: TextStyle(
-                        fontSize: 20.0,
-                        color: Colors.blue.shade800,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Colors.amberAccent.shade700, width: 2.0),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        TextFormField(
+                          controller: confirmPasswordEditingController,
+                          onSaved: (value) {
+                            confirmPasswordEditingController.text = value!;
+                          },
+                          validator: (value) {
+                            if (confirmPasswordEditingController.text !=
+                                passwordEditingController.text) {
+                              return "Password don't match";
+                            }
+                            return null;
+                          },
+                          obscureText: true,
+                          textInputAction: TextInputAction.done,
+                          style: const TextStyle(
+                            fontSize: 20.0,
+                          ),
+                          decoration: InputDecoration(
+                            contentPadding:
+                                const EdgeInsets.fromLTRB(10, 15, 10, 15),
+                            prefixIcon: const Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 5, horizontal: 10),
+                              child: Icon(
+                                Icons.no_encryption_gmailerrorred_sharp,
+                                size: 30,
+                                color: Colors.black,
+                              ),
+                            ),
+                            hintText: "Enter Confirm Password",
+                            hintStyle: const TextStyle(
+                              fontSize: 22.0,
+                            ),
+                            labelText: "Confirm Password",
+                            labelStyle: TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.blue.shade800,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors.amberAccent.shade700,
+                                  width: 2.0),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(
@@ -153,7 +232,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   ElevatedButton(
                     child: const Text("SignUp"),
-                    onPressed: () => {print("object")},
+                    onPressed: () => {
+                      signUp(emailEditingController.text,
+                          passwordEditingController.text)
+                    },
                     style: ElevatedButton.styleFrom(
                         primary: Colors.blueAccent[900],
                         shadowColor: Colors.black,
@@ -224,7 +306,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           text: "Click Here",
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              Navigator.pushNamed(context, "/login");
+                              Navigator.pushReplacementNamed(context, "/login");
                             },
                           style: const TextStyle(
                               fontSize: 20.0,
@@ -241,5 +323,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  void signUp(String email, String password) async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        await _auth
+            .createUserWithEmailAndPassword(
+                email: emailEditingController.text,
+                password: passwordEditingController.text)
+            .then((value) =>
+                {Navigator.pushReplacementNamed(context, "/homescreen")})
+            .catchError((e) => {print(e)});
+      } catch (error) {
+        showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+                  title: Text("Warning!!!"),
+                  content: Text("${error}"),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'Cancle'),
+                      child: const Text("Cancle"),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'OK'),
+                      child: const Text("OK"),
+                    )
+                  ],
+                ));
+        print(error.toString());
+      }
+    }
   }
 }

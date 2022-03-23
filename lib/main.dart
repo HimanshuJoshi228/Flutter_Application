@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_application_1/Screens/AppStack/home_screen.dart';
 import 'package:flutter_application_1/Screens/AuthStack/login_screen.dart';
 import 'package:flutter_application_1/Screens/AuthStack/signup_screen.dart';
 import 'package:flutter_application_1/Screens/splash_screen.dart';
 import 'package:flutter_application_1/Screens/start_screen.dart';
 
-void main() => runApp(MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(
+    const MyApp(),
+  );
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
