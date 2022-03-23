@@ -3,6 +3,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -260,7 +262,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     padding:
                         const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                     child: RaisedButton(
-                      onPressed: () => {print("object")},
+                      onPressed: () => {warningAlert()},
+                      onLongPress: () => {signInWithGoogle()},
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5),
                         side: const BorderSide(color: Colors.black),
@@ -325,6 +328,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
+// sign up with email and password
   void signUp(String email, String password) async {
     if (_formKey.currentState!.validate()) {
       try {
@@ -355,5 +359,40 @@ class _SignUpScreenState extends State<SignUpScreen> {
         print(error.toString());
       }
     }
+  }
+
+  // sign up with google
+  signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential).then(
+        (value) => Navigator.pushReplacementNamed(context, "/homescreen"));
+  }
+
+  warningAlert() {
+    showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text("Warning!!!"),
+              content: Text("Pressed Button for 2 sec"),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, 'OK'),
+                  child: const Text("OK"),
+                )
+              ],
+            ));
   }
 }
