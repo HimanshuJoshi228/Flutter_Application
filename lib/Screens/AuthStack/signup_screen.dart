@@ -337,7 +337,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 email: emailEditingController.text,
                 password: passwordEditingController.text)
             .then((value) =>
-                {Navigator.pushReplacementNamed(context, "/homescreen")})
+                {Navigator.pushReplacementNamed(context, "/userinfoscreen")})
             .catchError((e) => {print(e)});
       } catch (error) {
         showDialog<String>(
@@ -375,6 +375,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       accessToken: googleAuth?.accessToken,
       idToken: googleAuth?.idToken,
     );
+    GoogleSignIn().disconnect();
 
     // Once signed in, return the UserCredential
     return await FirebaseAuth.instance.signInWithCredential(credential).then(

@@ -98,21 +98,22 @@ class _StartScreenState extends State<StartScreen> {
               onPressed: () =>
                   {Navigator.pushReplacementNamed(context, "/signup")},
               style: ElevatedButton.styleFrom(
-                  primary: Colors.white,
-                  shadowColor: Colors.black,
-                  elevation: 15,
-                  fixedSize: const Size(350, 60),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50),
-                    side: const BorderSide(
-                      color: Colors.black,
-                      width: 1.5,
-                    ),
+                primary: Colors.white,
+                shadowColor: Colors.black,
+                elevation: 15,
+                fixedSize: const Size(350, 60),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                  side: const BorderSide(
+                    color: Colors.black,
+                    width: 1.5,
                   ),
-                  textStyle: const TextStyle(
-                      fontSize: 25,
-                      letterSpacing: 3,
-                      fontWeight: FontWeight.bold)),
+                ),
+                textStyle: const TextStyle(
+                    fontSize: 25,
+                    letterSpacing: 3,
+                    fontWeight: FontWeight.bold),
+              ),
             )
           ],
         ),

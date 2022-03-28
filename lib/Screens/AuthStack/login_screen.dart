@@ -13,16 +13,13 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-// calling firebase
+  // calling firebase
   final _auth = FirebaseAuth.instance;
   // form key
   final _formKey = GlobalKey<FormState>();
   // edit controller
   final emailEditingController = new TextEditingController();
   final passwordEditingController = new TextEditingController();
-
-  // string the error msg
-  // String? errorMessage;
 
   // despose controller
   @override
@@ -136,6 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             if (!regex.hasMatch(value)) {
                               return ("Enter Valid Password(Min. 6 Character)");
                             }
+                            return null;
                           },
                           obscureText: true,
                           textInputAction: TextInputAction.done,
@@ -325,7 +323,7 @@ class _LoginScreenState extends State<LoginScreen> {
       accessToken: googleAuth?.accessToken,
       idToken: googleAuth?.idToken,
     );
-
+    GoogleSignIn().disconnect();
     // Once signed in, return the UserCredential
     return await FirebaseAuth.instance.signInWithCredential(credential).then(
         (value) => Navigator.pushReplacementNamed(context, "/homescreen"));

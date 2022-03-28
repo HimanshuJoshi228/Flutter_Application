@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_application_1/Screens/AppStack/post_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -17,10 +17,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.purple,
         title: const Text(
           "HomeScreen",
         ),
       ),
+      backgroundColor: Colors.blue[300],
+      body: PostScreen(),
       drawer: Drawer(
         child: ListView(
           children: [
@@ -101,21 +104,25 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ListTile(
               title: Row(
-                children: const [
-                  Icon(
+                children: [
+                  const Icon(
                     Icons.verified_user_sharp,
                     size: 30.0,
                     color: Colors.blue,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
-                  Text(
-                    "Profile",
-                    style: TextStyle(
-                      fontSize: 25,
-                    ),
-                  ),
+                  InkWell(
+                      child: const Text(
+                        "Profile",
+                        style: TextStyle(
+                          fontSize: 25,
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.pushNamed(context, "/profilescreen");
+                      }),
                 ],
               ),
             ),
@@ -196,13 +203,16 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      floatingActionButton: const SizedBox(
+      floatingActionButton: SizedBox(
         height: 80,
         width: 80,
         child: FloatingActionButton(
           splashColor: Colors.green,
-          onPressed: null,
-          child: Icon(
+          backgroundColor: Colors.purple,
+          onPressed: () {
+            Navigator.pushNamed(context, "/addpostscreen");
+          },
+          child: const Icon(
             Icons.add,
             size: 30.0,
           ),
@@ -214,7 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> logOut(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
-    GoogleSignIn().disconnect();
     Navigator.pushReplacementNamed(context, "/startscreen");
+    print("logout");
   }
 }
